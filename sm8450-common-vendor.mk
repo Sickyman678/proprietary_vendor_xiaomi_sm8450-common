@@ -928,3 +928,17 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_BOOT_JARS += \
     WfdCommon
+
+# liuqin has no eSE / secure-element hardware (see the SE override in
+# device/xiaomi/liuqin/configs/vintf/manifest_xiaomi.xml). Drop the SE HAL
+# services so eSE1 is not registered live and com.android.se's
+# SecureElementService does not ANR-loop probing an absent HAL. The $(filter-out)
+# works here because these packages are added by += within THIS file (literal
+# names); the same filter-out in an inheriting makefile would only see an
+# inherit marker and be a no-op (product config is strictly additive).
+ifeq ($(TARGET_PRODUCT),lineage_liuqin)
+PRODUCT_PACKAGES := $(filter-out \
+    android.hardware.secure_element@1.0-impl \
+    vendor.qti.secure_element@1.2-service, \
+    $(PRODUCT_PACKAGES))
+endif
