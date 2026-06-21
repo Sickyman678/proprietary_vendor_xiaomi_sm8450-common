@@ -781,15 +781,10 @@ PRODUCT_PACKAGES += \
     HotwordEnrollmentXGoogleHEXAGON_WIDEBAND \
     HotwordEnrollmentYGoogleHEXAGON_WIDEBAND \
     AtFwd2 \
-    ImsRcsService \
     PowerOffAlarm \
     QCC \
-    QtiTelephonyService \
-    QtiTelephony \
     WfdService \
     dpmserviceapp \
-    ims \
-    qcrilmsgtunnel \
     WfdCommon \
     uimgbalibrary \
     uimgbamanagerlibrary \
@@ -914,6 +909,21 @@ PRODUCT_PACKAGES += \
     qccsyshal@1.2-service \
     tcmd \
     wfdservice64
+
+# Telephony/IMS user apps. These are gated on TARGET_HAS_NO_TELEPHONY because the
+# telephony framework libs they depend on (extphonelib et al.) are themselves
+# gated out for wifi-only targets in device/.../common.mk. Shipping the apps
+# without those libs makes com.qti.phone crash-loop on a missing
+# com.qti.extphone.IExtPhone$Stub (NoClassDefFoundError), pegging a CPU core.
+# Kept for telephony devices (e.g. marble); dropped for liuqin.
+ifneq ($(TARGET_HAS_NO_TELEPHONY),true)
+PRODUCT_PACKAGES += \
+    ImsRcsService \
+    QtiTelephonyService \
+    QtiTelephony \
+    ims \
+    qcrilmsgtunnel
+endif
 
 PRODUCT_PACKAGES += \
     system_ext_priv-app_ims_lib_arm64_libimscamera_jni_so \
