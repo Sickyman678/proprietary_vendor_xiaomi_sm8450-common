@@ -16166,7 +16166,14 @@ cc_prebuilt_library_shared {
                 "libaudioclient",
                 "libaudiofoundation",
                 "audioclient-types-aidl-cpp",
-                "android.media.audio.common.types-V4-cpp",
+                // android.media.audio.common.types-V4-cpp is intentionally not
+                // listed: Android 17 moved the platform audio stack to V5, and
+                // libaudioclient/libaudiofoundation pull V5 transitively, so
+                // declaring V4 here makes Soong reject the module for depending
+                // on two versions of one aidl_interface. The blob still has V4
+                // in its DT_NEEDED, so V4 is force-installed via PRODUCT_PACKAGES
+                // in device/xiaomi/sm8450-common/common.mk.
+                // NOTE: re-running extract-files.py will regenerate this entry.
                 "libwfdmmsrc_system",
                 "libwfdavenhancements",
                 "libhidlbase",
