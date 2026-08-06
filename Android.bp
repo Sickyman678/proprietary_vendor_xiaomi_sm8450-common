@@ -16048,6 +16048,12 @@ cc_prebuilt_library_shared {
                 "libwfddisplayconfig",
                 "libmedia_helper",
                 "libaudioclient",
+                // Android 17 split android::AudioSystem's static methods out of
+                // libaudioclient into libaudiobase. The blob still resolves them
+                // at runtime (libaudioclient.so keeps libaudiobase.so in its
+                // DT_NEEDED), but check_elf_file only consults shared_libs, so
+                // it has to be named here explicitly.
+                "libaudiobase",
                 "libwfdavenhancements",
                 "libhidlbase",
                 "libgralloctypes",
@@ -16172,6 +16178,9 @@ cc_prebuilt_library_shared {
                 "libmedia_helper",
                 "libaudioclient",
                 "libaudiofoundation",
+                // See libwfdmmsrc_system: A17 moved android::AudioSystem's
+                // static methods into libaudiobase.
+                "libaudiobase",
                 "audioclient-types-aidl-cpp",
                 // android.media.audio.common.types-V4-cpp is intentionally not
                 // listed: Android 17 moved the platform audio stack to V5, and
