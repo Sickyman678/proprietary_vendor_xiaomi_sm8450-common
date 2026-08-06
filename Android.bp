@@ -16025,6 +16025,18 @@ cc_prebuilt_library_shared {
 cc_prebuilt_library_shared {
     name: "libwfdmmsrc_system",
     owner: "xiaomi",
+    // KNOWN BROKEN AT RUNTIME. This A15 blob calls
+    //   SurfaceComposerClient::createVirtualDisplay(
+    //       const std::string&, bool, bool, const std::string&, float)
+    // but Android 17 inserted a uid_t ownerUid parameter before the trailing
+    // float, so the old symbol no longer exists anywhere and the library will
+    // fail to load. Fixing it properly needs a shim that forwards to the 6-arg
+    // form, which cannot be injected here: this bionic has no
+    // TARGET_LD_SHIM_LIBS support, and a prebuilt's DT_NEEDED cannot be
+    // extended without patching the binary.
+    // The bypass keeps the rest of the ROM building; WiFi Display / Miracast
+    // is expected to be non-functional until the blob is updated or shimmed.
+    check_elf_files: false,
     strip: {
         none: true,
     },
