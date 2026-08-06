@@ -16142,6 +16142,13 @@ cc_prebuilt_library_shared {
 cc_prebuilt_library_shared {
     name: "libwfdservice",
     owner: "xiaomi",
+    // The blob's DT_NEEDED lists android.media.audio.common.types-V4-cpp.so,
+    // which deliberately cannot appear in shared_libs below (see the comment
+    // there). check_elf_file only looks at shared_libs, so it flags that entry
+    // as undeclared and fails the build. The dependency is satisfied at
+    // runtime by force-installing V4 from device/xiaomi/sm8450-common/common.mk,
+    // so skip the check for this module rather than the whole tree.
+    check_elf_files: false,
     strip: {
         none: true,
     },
