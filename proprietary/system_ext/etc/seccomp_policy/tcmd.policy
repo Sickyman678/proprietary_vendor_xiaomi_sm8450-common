@@ -31,6 +31,11 @@ epoll_pwait: 1
 close: 1
 openat: 1
 fstat: 1
+# tcmd seeks within the files it opens; without this libminijail logs
+# "blocked syscall: lseek" and kills the process, so tcmd never stays resident
+# (it is absent from ps on a running device). Paired with the pread64/read
+# entries already present.
+lseek: 1
 fcntl: 1
 newfstatat: 1
 epoll_ctl: 1
